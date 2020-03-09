@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 let Request = axios.create({
-    baseUrl:'http://ttapi.research.itcast.cn/app/v1_0/'
+    baseURL:'http://ttapi.research.itcast.cn/app/v1_0/'
 })
 
 // 添加请求拦截器
@@ -16,7 +16,7 @@ Request.interceptors.request.use(function (config) {
 // 添加响应拦截器
 Request.interceptors.response.use(function (response) {
   // 正常响应触发
-    console.log('有数据了',response);
+    console.log('有数据了');
     // 对响应数据做点什么
     return response;
   }, function (error) {

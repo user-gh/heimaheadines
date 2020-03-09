@@ -126,7 +126,7 @@ export default {
           this.$store.commit("changeToken", res.data.data.token);
           this.$store.commit("changeRefToken", res.data.data.refresh_token);
           // 还要存到localStorage
-          window.location.setItem("tokenInfo", JSON.stringify(res.data.data));
+          window.localStorage.setItem("tokenInfo", JSON.stringify(res.data.data));
           // 跳转首页
           this.$router.push("/home");
         }
