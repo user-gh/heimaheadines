@@ -16,19 +16,14 @@
     <van-field
       v-model="form.code"
       left-icon="smile-o"
-      type="password"
       :error-message="valid.code"
-      placeholder="请输入密码"
+      placeholder="请输入验证码"
     >
       <template slot="left-icon">
         <span class="iconfont icon-pic-lock"></span>
       </template>
-      <van-button slot="button" size="small" round color="#ededed">发送验证码</van-button>
+      <!-- <van-button slot="button" size="small" round color="#ededed">发送验证码</van-button> -->
     </van-field>
-    <!-- <van-cell>
-      <van-radio name="1" shape="square">自动登录</van-radio>
-      <van-cell value="内容" />
-    </van-cell>-->
     <van-cell class="cell-bottom" value="忘记密码">
       <!-- 使用 title 插槽来自定义标题 -->
       <template slot="title">
@@ -48,9 +43,9 @@
     >登录</van-button>
     <span class="span">你还可以选择以下方式登录</span>
     <div class="imgs">
-      <img src="../../images/WeChat.png" alt="">
-      <img src="../../images/QQ.png" alt="">
-      <img src="../../images/Weibo.png" alt="">
+      <img src="../../images/WeChat.png" alt />
+      <img src="../../images/QQ.png" alt /> 
+      <img src="../../images/Weibo.png" alt />
     </div>
     <span class="word">隐私条款</span>
   </div>
@@ -112,23 +107,22 @@ export default {
           console.log("全部通过");
           // 开启loading
           this.isloading = true;
-          // let data = await axios({
-          //   url: "http://ttapi.research.itcast.cn/app/v1_0/authorizations",
-          //   method: "post",
-          //   data: {
-          //     mobile: this.form.mobile,
-          //     code: this.form.code
-          //   }
-          // });
           let res = await login(this.form);
           console.log(res);
-          // 登录成功把token存到vuex中
-          this.$store.commit("changeToken", res.data.data.token);
-          this.$store.commit("changeRefToken", res.data.data.refresh_token);
-          // 还要存到localStorage
-          window.localStorage.setItem("tokenInfo", JSON.stringify(res.data.data));
-          // 跳转首页
-          this.$router.push("/home");
+          if (res.status == 201) {
+            // 登录成功把token存到vuex中
+            this.$store.commit("changeToken", res.data.data.token);
+            this.$store.commit("changeRefToken", res.data.data.refresh_token);
+            // 还要存到localStorage
+            window.localStorage.setItem(
+              "tokenInfo",
+              JSON.stringify(res.data.data)
+            );
+            // 跳转首页
+            this.$router.push("/home");
+          }else{
+            console.log('手机或验证码错误');
+          }
         }
       } catch (error) {
         //函数错误输出
@@ -166,6 +160,10 @@ export default {
   height: 100%;
   background: #f5f5f5;
 
+  .van-cell{
+    margin-top: 10px;
+  }
+
   .van-nav-bar.van-hairline--bottom {
     background: #3296fa;
   }
@@ -174,7 +172,7 @@ export default {
     color: #fff;
   }
 
-  .cell-bottom{
+  .cell-bottom {
     background: #f5f5f5;
     margin-top: 10px;
   }
@@ -185,35 +183,40 @@ export default {
     margin: 15px auto 0px;
     background: #6db4fb;
   }
-  
+
   .van-cell {
     .van-button {
       color: #000 !important;
     }
-  }
 
-  .span{
+    .van-cell__value{
+      span{
+        color:blue;
+      }
+    }
+  }
+  .span {
     display: block;
     margin-top: 30px;
     color: #999;
     text-align: center;
   }
 
-  .imgs{
+  .imgs {
     display: flex;
     justify-content: space-around;
     margin-top: 35px;
-    
-    img{
+
+    img {
       width: 60px;
       height: 60px;
     }
   }
-  
-  .word{
+
+  .word {
     display: block;
     text-align: center;
-    margin-top: 220px;
+    margin-top: 270px;
     color: #666;
   }
 }
