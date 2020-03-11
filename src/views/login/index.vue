@@ -44,7 +44,7 @@
     <span class="span">你还可以选择以下方式登录</span>
     <div class="imgs">
       <img src="../../images/WeChat.png" alt />
-      <img src="../../images/QQ.png" alt /> 
+      <img src="../../images/QQ.png" alt />
       <img src="../../images/Weibo.png" alt />
     </div>
     <span class="word">隐私条款</span>
@@ -120,8 +120,8 @@ export default {
             );
             // 跳转首页
             this.$router.push("/home");
-          }else{
-            console.log('手机或验证码错误');
+          } else {
+            console.log("手机或验证码错误");
           }
         }
       } catch (error) {
@@ -133,23 +133,27 @@ export default {
       }
     },
     // 登录校验方法
-    checkLogin() {
-      let falg = true;
-      if (/0?(13|14|15|18|17)[0-9]{9}/.test(this.form.mobile)) {
-        this.valid.mobile = "";
-        falg = true;
-      } else {
-        this.valid.mobile = "请输入正确的手机号";
-        falg = false;
+    async checkLogin() {
+      try {
+        let falg = true;
+        if (/0?(13|14|15|18|17)[0-9]{9}/.test(this.form.mobile)) {
+          this.valid.mobile = "";
+          falg = true;
+        } else {
+          this.valid.mobile = "请输入正确的手机号";
+          falg = false;
+        }
+        if (this.form.code.length == 6) {
+          this.valid.code = "";
+          falg = true;
+        } else {
+          this.valid.code = "请输入正确的验证码";
+          falg = false;
+        }
+        return falg;
+      } catch (error) {
+        console.log(error);
       }
-      if (this.form.code.length == 6) {
-        this.valid.code = "";
-        falg = true;
-      } else {
-        this.valid.code = "请输入正确的验证码";
-        falg = false;
-      }
-      return falg;
     }
   }
 };
@@ -160,7 +164,7 @@ export default {
   height: 100%;
   background: #f5f5f5;
 
-  .van-cell{
+  .van-cell {
     margin-top: 10px;
   }
 
@@ -189,9 +193,9 @@ export default {
       color: #000 !important;
     }
 
-    .van-cell__value{
-      span{
-        color:blue;
+    .van-cell__value {
+      span {
+        color: blue;
       }
     }
   }
@@ -208,7 +212,6 @@ export default {
     margin-top: 35px;
 
     img {
-      width: 60px;
       height: 60px;
     }
   }
