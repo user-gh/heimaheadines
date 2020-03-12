@@ -7,3 +7,11 @@ export function channelList(){
         method:'get'
     })
 }
+
+// 获取全部频道列表
+export function AllchannelList(){
+    return request({
+        url:'channels',
+        method:'get'
+    })
+}
