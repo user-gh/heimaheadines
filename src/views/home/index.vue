@@ -1,71 +1,97 @@
 <template>
   <div class="home">
     <div class="top-nav">
-      <van-icon class="top-icon" name="wap-nav" />
+      <van-icon class="top-icon" name="wap-nav" @click="$refs.channel.show = true" />
       <van-search class="top-search" shape="round" background="#3194ff" placeholder="请输入搜索关键词" />
       <van-icon class="top-icon" name="search" />
     </div>
 
     <van-tabs class="my-tabs" v-model="active">
       <van-tab v-for="(item,index) in channelList" :key="index" :name="item.id" :title="item.name ">
-        <van-pull-refresh v-model="item.pullLoading" @refresh="onRefresh">
-          <van-list v-model="item.loading" :finished="item.finished" finished-text="没有更多了" @load="onLoad(item)">
+        <van-pull-refresh v-model="item.pullLoading" @refresh="onRefresh(item)">
+          <van-list
+            v-model="item.loading"
+            :finished="item.finished"
+            finished-text="没有更多了"
+            @load="onLoad(item)"
+          >
             <van-cell v-for="(it,idx) in item.list" :key="idx" :title="it.title" />
           </van-list>
         </van-pull-refresh>
-
       </van-tab>
     </van-tabs>
+    <channel ref="channel" :myList='channelList' />
   </div>
 </template>
 
 <script>
 import { channelList } from "@/api/channel";
 import { activeList } from "@/api/newsactive";
+// 导入组件
+import channel from './commponts/channel'
 export default {
+  components:{
+    channel
+  },
   name: "index",
   data() {
     return {
-      active:'',
+      active: "",
       // 存放频道的数组
-      channelList: [],
+      channelList: []
     };
   },
   methods: {
+    // 下拉刷新
     // 加载数据
     // 如果loading是false就触发加载数据,如果loading是ture,就不需要触发加载数据
     async onLoad(item) {
       try {
-         let res = await activeList({
+        let res = await activeList({
           // 频道id
-           channel_id:item.id,
-          // 记录上一次请求返回的pre_timetamp时间戳  
+          channel_id: item.id,
+          // 记录上一次请求返回的pre_timetamp时间戳
           // 时间戳
-           timestamp:item.pre_time,
+          timestamp: item.pre_time,
           // 是否置顶
-           with_top:0
-         });
-         console.log(res);
+          with_top: 0
+        });
         // 拿到新闻数据
         let arr = res.data.data.results;
-        // 记录下一页的时间戳
-        item.pre_time = res.data.data.pre_timestamp;
-        // 要当前是哪个频道,就把哪个频道的数据传过来
-        // 然后修改这个频道中的list
-        item.list.push(...arr); 
-        item.loading = false; 
-        if (item.list.length >= 100) {
+        console.log(res);
+        // 如果返回的是空数组，表示已经加载完毕
+        if (arr.length == 0) {
           item.finished = true;
+        } else {
+          // 记录下一页的时间戳
+          item.pre_time = res.data.data.pre_timestamp;
+          // 要当前是哪个频道,就把哪个频道的数据传过来
+          // 然后修改这个频道中的list
+          item.list.push(...arr);
+          item.loading = false;
         }
       } catch (error) {
         console.log(error);
       }
     },
-    onRefresh() {
-      setTimeout(() => {
-        this.pullLoading = false;
-        console.log("我被调用了");
-      }, 1000);
+    // 下拉刷新
+    async onRefresh(item) {
+      try {
+        // 把原有的时间戳改为随机的时间戳
+        item.pre_time = Date.now();
+        // 标记是否加载所有数据,
+        item.finished = false;
+        // 控制原有的loading加载状态,代表可以重新加载新数据
+        item.loading = false;
+        // 清空新闻列表数据
+        item.list = [];
+        // 调用请求新闻列表的方法
+        await this.onLoad(item);
+        // 下拉刷新状态为false,结束下拉框状态
+        item.pullLoading = false;
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
   async created() {
@@ -76,16 +102,16 @@ export default {
       // 根据不同的频道给出对应的数据
       this.channelList.forEach(item => {
         // pullLoading:控制下拉刷新状态
-        this.$set(item,'pullLoading',false);
-         // list中的v-model是控制loading加载状态,
-        this.$set(item,'loading',false);
-         // finished:标记是否已经把所有数据加载完毕
-        this.$set(item,'finished',false);
-         // 存放每一个频道下面的数据
-        this.$set(item,'list',[]);
+        this.$set(item, "pullLoading", false);
+        // list中的v-model是控制loading加载状态,
+        this.$set(item, "loading", false);
+        // finished:标记是否已经把所有数据加载完毕
+        this.$set(item, "finished", false);
+        // 存放每一个频道下面的数据
+        this.$set(item, "list", []);
         //存放时间戳,不用在界面显示
         item.pre_time = Date.now();
-      })
+      });
     } catch (error) {
       console.log(error);
     }

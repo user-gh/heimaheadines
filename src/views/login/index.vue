@@ -195,7 +195,7 @@ export default {
 
     .van-cell__value {
       span {
-        color: blue;
+        color: #0094ff;
       }
     }
   }
@@ -219,8 +219,8 @@ export default {
   .word {
     display: block;
     text-align: center;
-    margin-top: 270px;
-    color: #666;
+    margin-top: 200px;
+    color: #0094ff;
   }
 }
 </style>z
