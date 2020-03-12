@@ -20,8 +20,6 @@ Request.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 Request.interceptors.response.use(function (response) {
-  // 正常响应触发
-  console.log('有数据了');
   // 对响应数据做点什么
   return response;
 }, function (error) {
