@@ -17,11 +17,18 @@
           >
             <van-cell v-for="(it,idx) in item.list" :key="idx" :title="it.title">
               <template slot="title">
-                <div class="title">{{it.title}}</div>
-                <img v-if="it.cover.type == 1" :src="item" alt="">
+                <div class="title">
+                  <span>{{it.title}}</span>
+                  <img
+                    style="height:73px;width:116px;"
+                    v-if="it.cover.type == 1"
+                    :src="it.cover.images[0]"
+                    alt
+                  />
+                </div>
                 <van-grid v-if="it.cover.type == 3" :border="false" :column-num="3">
                   <van-grid-item v-for="(item, index) in it.cover.images" :key="index">
-                    <van-image style="height:64px" :src="item" />
+                    <van-image style="height:73px" :src="item" />
                   </van-grid-item>
                 </van-grid>
                 <div class="info">
@@ -192,6 +199,7 @@ export default {
     display: flex;
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 
     .info-span {
       margin-right: 10px;
@@ -204,6 +212,9 @@ export default {
       justify-content: center;
       align-items: center;
       border: 1px solid #ccc;
+    }
+    .title {
+      display: flex;
     }
   }
 }
