@@ -11,11 +11,21 @@
       <!-- 标题部分 -->
       <div class="channel-title">
         <span>我的频道</span>
-        <van-button plain hairline type="danger" round size="mini">编辑</van-button>
+        <van-button
+          plain
+          hairline
+          type="danger"
+          round
+          size="mini"
+          @click="isEdit = !isEdit"
+        >{{isEdit ? '完成':'编辑'}}</van-button>
       </div>
       <!-- 内容 -->
       <template v-for="(item, index) in myList">
-        <van-tag class="my-tag" v-if="index != 0" :key="index">{{item.name}}</van-tag>
+        <van-tag class="my-tag" v-if="index != 0" :key="index">
+          {{item.name}}
+          <van-icon v-if="isEdit" @click="Del(item)" class="close" name="clear" color="#f00" />
+        </van-tag>
       </template>
     </div>
     <!-- 频道推荐 -->
@@ -51,23 +61,16 @@ export default {
       show: false,
       // 所有频道列表
       AllList: [],
-      //过滤之后的频道列表
-      outList: []
+      // 表示是否为编辑状态
+      isEdit: false
     };
   },
   methods: {
-    // 添加频道点击事件
+    // 频道推荐的点击事件
     async addChannel(item) {
       try {
         // 添加到我的频道
         this.myList.push(item);
-        // 删除被添加的频道推荐
-        for (let i = 0; i < this.outList.length; i++) {
-          // 如果点击的频道等于遍历到的频道,删除这个频道
-          if (this.outList[i] == item) {
-            this.outList.splice(i, 1);
-          }
-        };
         // 准备请求保存的参数
         let channels = this.myList.slice(1).map((item, index) => {
           let obj = {
@@ -83,6 +86,47 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    // 删除频道点击事件
+    async Del(item) {
+      try {
+        // 遍历我的数组是否与被点击的频道相等,相等就从数组中删除掉
+        for (var i = 0; i < this.myList.length; i++) {
+          if(this.myList[i] == item){
+            // splice 删除数组的方法
+            this.myList.splice(i,1);
+          }
+        };
+        // 根据最新的myList生成这个数组
+        let channels = this.myList.slice(1).map((item,index) => {
+          let obj = {
+            id:item.id,
+            seq:index +1
+          };
+          return obj;
+        });
+         // 调用保存修改之后的方法 channel
+        await savechannelList({
+          channels
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },
+  // 计算属性
+  computed: {
+    //过滤之后的频道列表
+    outList() {
+      // 取出myList每个频道的id
+      let id = this.myList.map(item => {
+        return item.id;
+      });
+      // 过滤掉在我的频道里的其他频道
+      return this.AllList.filter(item => {
+        // 判断每个频道在不在myList里面
+        return !id.includes(item.id);
+      });
     }
   },
   //  页面一加载,获取全部频道列表
@@ -91,15 +135,6 @@ export default {
       let res = await AllchannelList();
       // 所有频道列表
       this.AllList = res.data.data.channels;
-      // 取出myList每个频道的id
-      let id = this.myList.map(item => {
-        return item.id;
-      });
-      // 过滤掉在我的频道里的其他频道
-      this.outList = this.AllList.filter(item => {
-        // 判断每个频道在不在myList里面
-        return !id.includes(item.id);
-      });
     } catch (error) {
       console.log(error);
     }
@@ -125,6 +160,13 @@ export default {
 .my-tag {
   margin-top: 20px;
   margin-right: 10px;
+  position: relative;
+
+  .close {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+  }
 }
 .channel-title {
   display: flex;

@@ -15,12 +15,30 @@
             finished-text="没有更多了"
             @load="onLoad(item)"
           >
-            <van-cell v-for="(it,idx) in item.list" :key="idx" :title="it.title" />
+            <van-cell v-for="(it,idx) in item.list" :key="idx" :title="it.title">
+              <template slot="title">
+                <div class="title">{{it.title}}</div>
+                <img v-if="it.cover.type == 1" :src="item" alt="">
+                <van-grid v-if="it.cover.type == 3" :border="false" :column-num="3">
+                  <van-grid-item v-for="(item, index) in it.cover.images" :key="index">
+                    <van-image style="height:64px" :src="item" />
+                  </van-grid-item>
+                </van-grid>
+                <div class="info">
+                  <div>
+                    <span class="info-span">{{it.aut_name}}</span>
+                    <span class="info-span">{{it.comm_count}}</span>
+                    <span class="info-span">{{it.pubdate}}</span>
+                  </div>
+                  <span class="more">x</span>
+                </div>
+              </template>
+            </van-cell>
           </van-list>
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
-    <channel ref="channel" :myList='channelList' />
+    <channel ref="channel" :myList="channelList" />
   </div>
 </template>
 
@@ -28,9 +46,9 @@
 import { channelList } from "@/api/channel";
 import { activeList } from "@/api/newsactive";
 // 导入组件
-import channel from './commponts/channel'
+import channel from "./commponts/channel";
 export default {
-  components:{
+  components: {
     channel
   },
   name: "index",
@@ -47,6 +65,7 @@ export default {
     // 如果loading是false就触发加载数据,如果loading是ture,就不需要触发加载数据
     async onLoad(item) {
       try {
+        console.log("执行上拉加载");
         let res = await activeList({
           // 频道id
           channel_id: item.id,
@@ -77,17 +96,28 @@ export default {
     // 下拉刷新
     async onRefresh(item) {
       try {
+        console.log("执行下拉刷新");
         // 把原有的时间戳改为随机的时间戳
         item.pre_time = Date.now();
         // 标记是否加载所有数据,
         item.finished = false;
         // 控制原有的loading加载状态,代表可以重新加载新数据
         item.loading = false;
-        // 清空新闻列表数据
-        item.list = [];
         // 调用请求新闻列表的方法
-        await this.onLoad(item);
+        // await this.onLoad(item);
         // 下拉刷新状态为false,结束下拉框状态
+        let res = await activeList({
+          // 频道id
+          channel_id: item.id,
+          // 记录上一次请求返回的pre_timetamp时间戳
+          // 时间戳
+          timestamp: item.pre_time,
+          // 是否置顶
+          with_top: 0
+        });
+        // 拿到新闻数据
+        let arr = res.data.data.results;
+        item.list = arr;
         item.pullLoading = false;
       } catch (error) {
         console.log(error);
@@ -98,6 +128,7 @@ export default {
     try {
       //获取频道数据发送请求
       let res = await channelList();
+      console.log(res.data.data.channels);
       this.channelList = res.data.data.channels;
       // 根据不同的频道给出对应的数据
       this.channelList.forEach(item => {
@@ -155,6 +186,24 @@ export default {
       // 我们要去看看顶部是多少高，然后就给多少
       top: 54px;
       width: 100%;
+    }
+  }
+  .info {
+    display: flex;
+    display: flex;
+    justify-content: space-between;
+
+    .info-span {
+      margin-right: 10px;
+      color: #ccc;
+    }
+    .more {
+      width: 23px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #ccc;
     }
   }
 }
