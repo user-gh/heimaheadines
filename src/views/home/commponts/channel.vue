@@ -1,5 +1,6 @@
 <template>
   <van-popup
+    @closed='isEdit = false'
     closeable
     close-icon-position="top-left"
     position="left"
@@ -51,6 +52,9 @@ export default {
   name: "channel",
   props: {
     // 我的频道列表
+    // 这个值是父组件传进来的
+    // 他们指向的都是同一块空间
+    // 我在子组件添加一个元素,那么父组件里的那个数组也会多一个元素
     myList: {
       type: Array,
       default: []
@@ -69,6 +73,11 @@ export default {
     // 频道推荐的点击事件
     async addChannel(item) {
       try {
+        this.$set(item,'pullLoading',false);
+        this.$set(item,'loading',false);
+        this.$set(item,'finished',false);
+        this.$set(item,'pre_time',Date.now());
+        this.$set(item,'list',[]);
         // 添加到我的频道
         this.myList.push(item);
         // 准备请求保存的参数
