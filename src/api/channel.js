@@ -15,3 +15,12 @@ export function AllchannelList(){
         method:'get'
     })
 }
+
+// 修改指定用户频道列表
+export function savechannelList(data){
+    return request({
+        url:'user/channels',
+        method:'put',
+        data
+    })
+}

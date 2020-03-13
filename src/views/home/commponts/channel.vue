@@ -25,13 +25,18 @@
         <span>频道推荐</span>
       </div>
       <!-- 内容 -->
-      <van-tag class="my-tag" v-for="(item, index) in outList" :key="index">+{{item.name}}</van-tag>
+      <van-tag
+        class="my-tag"
+        @click="addChannel(item)"
+        v-for="(item, index) in outList"
+        :key="index"
+      >+{{item.name}}</van-tag>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { AllchannelList } from "@/api/channel";
+import { AllchannelList, savechannelList } from "@/api/channel";
 export default {
   name: "channel",
   props: {
@@ -45,10 +50,40 @@ export default {
     return {
       show: false,
       // 所有频道列表
-      AllList:[],
+      AllList: [],
       //过滤之后的频道列表
-      outList:[]
+      outList: []
     };
+  },
+  methods: {
+    // 添加频道点击事件
+    async addChannel(item) {
+      try {
+        // 添加到我的频道
+        this.myList.push(item);
+        // 删除被添加的频道推荐
+        for (let i = 0; i < this.outList.length; i++) {
+          // 如果点击的频道等于遍历到的频道,删除这个频道
+          if (this.outList[i] == item) {
+            this.outList.splice(i, 1);
+          }
+        };
+        // 准备请求保存的参数
+        let channels = this.myList.slice(1).map((item, index) => {
+          let obj = {
+            id: item.id,
+            seq: index + 1
+          };
+          return obj;
+        });
+        // 调用保存修改之后的方法
+        await savechannelList({
+          channels
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
   //  页面一加载,获取全部频道列表
   async created() {
@@ -57,14 +92,14 @@ export default {
       // 所有频道列表
       this.AllList = res.data.data.channels;
       // 取出myList每个频道的id
-      let id = this.myList.map(item =>{
+      let id = this.myList.map(item => {
         return item.id;
       });
       // 过滤掉在我的频道里的其他频道
-      this.outList = this.AllList.filter(item =>{
+      this.outList = this.AllList.filter(item => {
         // 判断每个频道在不在myList里面
         return !id.includes(item.id);
-      })
+      });
     } catch (error) {
       console.log(error);
     }

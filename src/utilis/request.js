@@ -8,10 +8,9 @@ let Request = axios.create({
 Request.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   // 请求头里带token
-  // if (store.state.token) {
-   
-  // }
-  config.headers.Authorization = 'Bearer' + store.state.token;
+  if (store.state.token) {
+    config.headers.Authorization = 'Bearer ' + store.state.token;
+  }
   return config;
 }, function (error) {
   // 对请求错误做些什么
