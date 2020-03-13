@@ -25,7 +25,7 @@
         <span>频道推荐</span>
       </div>
       <!-- 内容 -->
-      <van-tag class="my-tag" v-for="(item, index) in AllList" :key="index">+{{item.name}}</van-tag>
+      <van-tag class="my-tag" v-for="(item, index) in outList" :key="index">+{{item.name}}</van-tag>
     </div>
   </van-popup>
 </template>
@@ -35,6 +35,7 @@ import { AllchannelList } from "@/api/channel";
 export default {
   name: "channel",
   props: {
+    // 我的频道列表
     myList: {
       type: Array,
       default: []
@@ -43,14 +44,27 @@ export default {
   data() {
     return {
       show: false,
-      AllList:[]
+      // 所有频道列表
+      AllList:[],
+      //过滤之后的频道列表
+      outList:[]
     };
   },
   //  页面一加载,获取全部频道列表
   async created() {
     try {
       let res = await AllchannelList();
+      // 所有频道列表
       this.AllList = res.data.data.channels;
+      // 取出myList每个频道的id
+      let id = this.myList.map(item =>{
+        return item.id;
+      });
+      // 过滤掉在我的频道里的其他频道
+      this.outList = this.AllList.filter(item =>{
+        // 判断每个频道在不在myList里面
+        return !id.includes(item.id);
+      })
     } catch (error) {
       console.log(error);
     }
