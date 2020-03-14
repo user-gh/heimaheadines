@@ -35,7 +35,7 @@
                   <div>
                     <span class="info-span">{{it.aut_name}}</span>
                     <span class="info-span">{{it.comm_count}}</span>
-                    <span class="info-span">{{it.pubdate}}</span>
+                    <span class="info-span">{{it.pubdate | dataBefore}}</span>
                   </div>
                   <span class="more">x</span>
                 </div>
