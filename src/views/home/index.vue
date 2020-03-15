@@ -2,7 +2,7 @@
   <div class="home">
     <div class="top-nav">
       <van-icon class="top-icon" name="wap-nav" @click="$refs.channel.show = true" />
-      <van-search class="top-search" shape="round" background="#3194ff" placeholder="请输入搜索关键词" />
+      <van-search @focus="$router.push('/search')"  class="top-search" shape="round" background="#3194ff" placeholder="请输入搜索关键词" />
       <van-icon class="top-icon" name="search" />
     </div>
 

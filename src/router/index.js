@@ -7,6 +7,7 @@ import home from '@/views/home/'
 import question from '@/views/question/'
 import video from '@/views/video/'
 import mine from '@/views/mine/'
+import search from '@/views/search/'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,14 @@ const routes = [
     component: login,
     meta: {
       title: '登录'
+    }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: search,
+    meta: {
+      title: '搜索'
     }
   },
   {
