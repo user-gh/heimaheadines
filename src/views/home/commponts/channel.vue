@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { AllchannelList, savechannelList } from "@/api/channel";
+import { AllchannelList, savechannelList, channelDel } from "@/api/channel";
 export default {
   name: "channel",
   props: {
@@ -107,16 +107,16 @@ export default {
           }
         };
         // 根据最新的myList生成这个数组
-        let channels = this.myList.slice(1).map((item,index) => {
-          let obj = {
-            id:item.id,
-            seq:index +1
-          };
-          return obj;
-        });
-         // 调用保存修改之后的方法 channel
-        await savechannelList({
-          channels
+        // let channels = this.myList.slice(1).map((item,index) => {
+        //   let obj = {
+        //     id:item.id,
+        //     seq:index +1
+        //   };
+        //   return obj;
+        // });
+         // 调用删除的方法 channelDel
+        await channelDel({
+          channels:item.id
         });
       } catch (error) {
         console.log(error);

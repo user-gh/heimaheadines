@@ -24,3 +24,12 @@ export function savechannelList(data){
         data
     })
 }
+
+// 批量删除用户频道列表
+export function channelDel(data){
+    return request({
+        url:'user/channels',
+        method:'DELETE',
+        data
+    })
+}
