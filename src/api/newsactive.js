@@ -8,3 +8,12 @@ export function activeList(params){
         params
     })
 }
+
+// 对文章不喜欢
+export function activedislike(data){
+    return request({
+        url:'article/dislikes',
+        method:'post',
+        data
+    })
+}

@@ -37,7 +37,7 @@
                     <span class="info-span">{{it.comm_count}}</span>
                     <span class="info-span">{{it.pubdate | dataBefore}}</span>
                   </div>
-                  <span class="more">x</span>
+                  <span @click="showmore(it,item.list)" class="more">x</span>
                 </div>
               </template>
             </van-cell>
@@ -46,6 +46,7 @@
       </van-tab>
     </van-tabs>
     <channel ref="channel" :myList="channelList" />
+    <more ref="more" />
   </div>
 </template>
 
@@ -54,9 +55,11 @@ import { channelList } from "@/api/channel";
 import { activeList } from "@/api/newsactive";
 // 导入组件
 import channel from "./commponts/channel";
+import more from './commponts/more';
 export default {
   components: {
-    channel
+    channel,
+    more
   },
   name: "index",
   data() {
@@ -129,7 +132,24 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    }
+    },
+    /**
+     * item:当前被点击的文章
+     * list:文章数组
+    */
+    // 更多操作点击事件
+    async showmore(item,list){
+      try {
+        // 显示更多操作的页面
+        this.$refs.more.show = true;
+        // 给更多操作传id
+        this.$refs.more.art_id = item.art_id;
+        // 给更多操作传文章数组
+        this.$refs.more.art_list = list;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   async created() {
     try {
