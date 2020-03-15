@@ -17,3 +17,12 @@ export function activedislike(data){
         data
     })
 }
+
+// 举报文章
+export function activereports(data){
+    return request({
+        url:'article/reports',
+        method:'post',
+        data
+    })
+}
