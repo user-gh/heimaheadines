@@ -8,3 +8,12 @@ export function getSuggest(params){
         params
     })
 }
+
+// 获取搜索结果
+export function getSearchResult(params){
+    return request({
+        url:'search',
+        method:'get',
+        params
+    })
+}

@@ -7,30 +7,37 @@
         class="top-search"
         background="#3194ff"
         placeholder="请输入搜索关键词"
-        @keydown.enter="$router.push(`/searchResult/${key}`)"
+        @keydown.enter="toSearchResult(key)"
       />
       <span @click="$router.back()">取消</span>
     </div>
+    <!-- 历史记录区域 -->
     <div class="history" v-if="suggList.length == 0">
       <div class="title">
         <span>历史记录</span>
-        <van-icon class="del-icon" name="delete" />
+        <van-icon @click="removeAll" class="del-icon" name="delete" />
       </div>
       <div class="history-content">
         <van-row>
-          <van-col class="col-span" span="12">111</van-col>
-          <van-col class="col-span" span="12">111</van-col>
-          <van-col class="col-span" span="12">111</van-col>
-          <van-col class="col-span" span="12">111</van-col>
+          <van-col 
+          @click="$router.push(`/searvhResult${item}`)" 
+          v-for="(item, index) in historyList" 
+          :key="index" 
+          class="col-span" 
+          span="12">
+          <span>{{item}}</span>
+          <van-icon class="remove" name="cross" @click.stop="del(index)" />
+          </van-col>
         </van-row>
       </div>
     </div>
+    <!-- 搜索建议区域 -->
     <van-cell-group v-else>
       <van-cell
         v-for="(item, index) in suggList"
         :key="index"
         icon="search"
-        @click="$router.push(`/searchResult/${item.oldItem}`)"
+        @click="toSearchResult(item.oldItem)"
       >
       <template slot="title">
         <div v-html="item.newItem"></div>
@@ -43,16 +50,22 @@
 
 <script>
 import { getSuggest } from "@/api/search";
+import { setLocal,getLocal,removeLocal } from '@/utilis/local'
 export default {
   name: "index",
   data() {
     return {
       key: "",
+      // 联想词汇
       suggList: [],
-      timeID:null
+      // 防抖计时器
+      timeID:null,
+      // 保存搜索历史记录
+      historyList:getLocal('history') || []
     };
   },
   methods: {
+    // 搜索框事件
      onInput() {
       try {
         // 使用函数防抖
@@ -82,7 +95,33 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    // 搜索框回车事件 
+    toSearchResult(key){
+      // 把历史记录添加到数组
+      this.historyList.unshift(key);
+      // 再利用set去重
+      let set = new Set(this.historyList);
+      // 并把去重后的结果重新赋给数组
+      this.historyList = [...set];
+      // 跳转并传值
+      this.$router.push(`/searchResult/${key}`);
+      //把历史记录添加到本地
+      setLocal('history',JSON.stringify(this.historyList));
+
+    },
+    // 清空历史记录数据
+    removeAll(){
+      this.historyList = [];
+      removeLocal('history');
+    },
+    // 删除历史记录的点击事件
+    del(index){
+      this.historyList.splice(index,1);
+        // 重新把最新数组保存到本地存储
+      setLocal('history',JSON.stringify(this.historyList));
     }
+  
   }
 };
 </script>
@@ -130,6 +169,15 @@ export default {
         align-items: center;
       }
     }
+    .col-span .van-col .van-col--12{
+      position: relative;
+
+      .remove{
+        position: absolute;
+        right: 0px;
+      }
+    }
+    
   }
 }
 </style>
