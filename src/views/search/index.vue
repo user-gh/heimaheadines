@@ -7,10 +7,11 @@
         class="top-search"
         background="#3194ff"
         placeholder="请输入搜索关键词"
+        @keydown.enter="$router.push(`/searchResult/${key}`)"
       />
       <span @click="$router.back()">取消</span>
     </div>
-    <div class="history" v-if="isHistory">
+    <div class="history" v-if="suggList.length == 0">
       <div class="title">
         <span>历史记录</span>
         <van-icon class="del-icon" name="delete" />
@@ -25,7 +26,18 @@
       </div>
     </div>
     <van-cell-group v-else>
-      <van-cell v-for="(item, index) in suggList" :key="index" :title="item" icon="search" />
+      <van-cell
+        v-for="(item, index) in suggList"
+        :key="index"
+        :title="item"
+        icon="search"
+        @click="$router.push(`/searchResult/${item}`)"
+      >
+      <template slot="title">
+        <div v-html="item"></div>
+      </template>
+      </van-cell>
+    </van-cell-group>
     </van-cell-group>
   </div>
 </template>
@@ -36,9 +48,7 @@ export default {
   name: "index",
   data() {
     return {
-      // 是否显示历史记录
-      isHistory: true,
-      key: '',
+      key: "",
       suggList: []
     };
   },
@@ -46,18 +56,21 @@ export default {
     async onInput() {
       try {
         if (this.key == "") {
-          this.isHistory = true;
+          this.suggList = [];
           return;
         }
         let res = await getSuggest({
-          q:this.key
+          q: this.key
         });
-        console.log(res);
         this.suggList = res.data.data.options;
-        this.isHistory = false;
+        // 遍历这个数组的每个元素，对每个元素进行高亮处理
+        this.suggList = this.suggList.map(item => {
+          // 先统一转成小写，再调用replace做替换
+          return item.toLowerCase().replace(this.key.toLowerCase(),`<span style="font-weight:bold">${this.key}</span>`)
+        });
       } catch (error) {
         console.log(error);
-      } 
+      }
     }
   }
 };
@@ -88,6 +101,8 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-left: 10px;
+      margin-right: 10px;
 
       .del-icon {
         font-size: 25px;

@@ -8,6 +8,7 @@ import question from '@/views/question/'
 import video from '@/views/video/'
 import mine from '@/views/mine/'
 import search from '@/views/search/'
+import searchResult from '@/views/searchResult/'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,25 @@ const routes = [
     component: search,
     meta: {
       title: '搜索'
+    }
+  },
+  {
+    /*
+      动态路由匹配
+      路由:
+        path:'/路径/:参数'
+      传递:
+        $router.push(`/路径/${要传的参数}`)
+      接收:
+        {{$route.params.参数}}
+      注意:
+        路由的参数和接收的参数要一致
+    */
+    path: '/searchResult/:key',
+    name: 'searchResult',
+    component: searchResult,
+    meta: {
+      title: '搜索结果'
     }
   },
   {
