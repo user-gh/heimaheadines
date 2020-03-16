@@ -29,12 +29,11 @@
       <van-cell
         v-for="(item, index) in suggList"
         :key="index"
-        :title="item"
         icon="search"
-        @click="$router.push(`/searchResult/${item}`)"
+        @click="$router.push(`/searchResult/${item.oldItem}`)"
       >
       <template slot="title">
-        <div v-html="item"></div>
+        <div v-html="item.newItem"></div>
       </template>
       </van-cell>
     </van-cell-group>
@@ -49,13 +48,20 @@ export default {
   data() {
     return {
       key: "",
-      suggList: []
+      suggList: [],
+      timeID:null
     };
   },
   methods: {
-    async onInput() {
+     onInput() {
       try {
-        if (this.key == "") {
+        // 使用函数防抖
+        // 把代码用setTimeout包起来
+        // 每次计时器执行之前清掉原有的计时器
+        clearTimeout(this.timeID);
+        this.timeID = setTimeout(async () => {
+          console.log('执行了');
+          if (this.key == "") {
           this.suggList = [];
           return;
         }
@@ -66,8 +72,13 @@ export default {
         // 遍历这个数组的每个元素，对每个元素进行高亮处理
         this.suggList = this.suggList.map(item => {
           // 先统一转成小写，再调用replace做替换
-          return item.toLowerCase().replace(this.key.toLowerCase(),`<span style="font-weight:bold">${this.key}</span>`)
-        });
+          let str = item.toLowerCase().replace(this.key.toLowerCase(),`<span style="font-weight:bold">${this.key}</span>`);
+          return {
+            oldItem: item,
+            newItem:str
+          }
+        }); 
+        }, 400);
       } catch (error) {
         console.log(error);
       }
