@@ -20,7 +20,7 @@
       <div class="history-content">
         <van-row>
           <van-col 
-          @click="$router.push(`/searvhResult${item}`)" 
+          @click="$router.push(`/searchResult/${item}`)" 
           v-for="(item, index) in historyList" 
           :key="index" 
           class="col-span" 
@@ -97,26 +97,33 @@ export default {
       }
     },
     // 搜索框回车事件 
-    toSearchResult(key){
-      // 把历史记录添加到数组
-      this.historyList.unshift(key);
-      // 再利用set去重
-      let set = new Set(this.historyList);
-      // 并把去重后的结果重新赋给数组
-      this.historyList = [...set];
-      // 跳转并传值
-      this.$router.push(`/searchResult/${key}`);
-      //把历史记录添加到本地
-      setLocal('history',JSON.stringify(this.historyList));
+    async  toSearchResult(key){
+     try {
+        // 把历史记录添加到数组
+        this.historyList.unshift(key);
+        // 再利用set去重
+        let set = new Set(this.historyList);
+        // 并把去重后的结果重新赋给数组
+        this.historyList = [...set];
+        // 跳转并传值
+        this.$router.push(`/searchResult/${key}`);
+        //把历史记录添加到本地(需要把数组 转成json字符串再存储)
+        setLocal('history',JSON.stringify(this.historyList));
+     } catch (error) {
+       console.log(error);
+     }
 
     },
     // 清空历史记录数据
     removeAll(){
+      // 清空数组
       this.historyList = [];
+      // 清空本地存储历史记录
       removeLocal('history');
     },
     // 删除历史记录的点击事件
     del(index){
+      // 删除对应的历史记录
       this.historyList.splice(index,1);
         // 重新把最新数组保存到本地存储
       setLocal('history',JSON.stringify(this.historyList));

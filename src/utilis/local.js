@@ -9,6 +9,6 @@ export  function getLocal(key){
 }
 
 // 删除localStroage
-export  function romoveLocal(key){
+export  function removeLocal(key){
     window.localStorage.removeItem(key);
 } 
