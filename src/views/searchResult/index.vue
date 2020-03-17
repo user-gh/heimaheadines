@@ -31,11 +31,11 @@
             </div>
             <!-- 评论,点赞,分享 -->
             <div class="share-box">
-              <div class="share-content-box">
+              <div class="share-content-box" @click="goComment">
                 <van-icon name="comment-o" />
                 <span>{{item.comm_count}}评论</span>
               </div>
-              <div class="share-content-box">
+              <div class="share-content-box" @click="golike">
                 <van-icon name="like-o" />
                 <span>{{item.like_count}}点赞</span>
               </div>
@@ -109,6 +109,28 @@ export default {
         }
       } catch (error) {
         console.log(error);
+      }
+    },
+    // 判断是否登录封装函数
+    checkLogin() {
+      if (this.$store.state.token) {
+        return true;
+      } else {
+        this.$toast.fail("请先登录!");
+        this.$router.push("/login");
+        return false;
+      }
+    },
+    // 去评论的点击事件
+    goComment() {
+      if(this.checkLogin()){
+        console.log('去评论');
+      }
+    },
+    // 去点赞的点击事件
+    golike(){
+      if(this.checkLogin()){
+        console.log('去点赞');
       }
     }
   }
