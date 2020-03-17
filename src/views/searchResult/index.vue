@@ -8,7 +8,7 @@
         <template slot="title">
           <div>
             <!-- 标题 -->
-            <div>
+            <div style="display:flex; justify-content:space-between;">
               <span>{{item.title}}</span>
               <img
                 style="height:73px;width:116px;"
@@ -65,10 +65,21 @@ export default {
       finished: false,
       // 搜索结果列表
       list: [],
-      page:1
+      // 结果页码
+      page: 1,
+      // 页容量
+      per_page: 10
     };
   },
   methods: {
+    /**
+     *  onload: 下拉加载数据事件
+     *  请求参数:
+     *        page: 页码(1)
+     *        per_page: 页容量(10)
+     *              q : 搜索关键字
+     * */
+
     // 加载列表数据方法,一旦调用则把loading改为true
     async onLoad() {
       try {
@@ -76,24 +87,31 @@ export default {
         // 接收传过来的搜索关键字
         let val = this.$route.params.key;
         let res = await getSearchResult({
-          page:this.page,
-          per_page: 10,
+          page: this.page,
+          per_page: this.per_page,
           q: val
         });
         console.log(res);
+        // 下拉加载第2页，第2页数据....
+        this.page++;
+        // 搜索结果(10条)
         let arr = res.data.data.results;
-        if (arr.length == 0) {
+        // 得出总页码(总条数据除以页容量并向上取整)
+        let lastPage = Math.ceil(res.data.data.totalpage / this.per_page);
+        // 如果当前页码大于总页码,则停止加载
+        if (this.page > lastPage) {
           this.finished = true;
         } else {
-          // this.page = Math.ceil( Number(res.data.data.total_count) / 10);
+          // 将加载的数据添加到数组中
           this.list.push(...arr);
+          // 为false，再次调用onLoad
           this.loading = false;
         }
       } catch (error) {
-        console.log(error)  ; 
+        console.log(error);
       }
     }
-  },
+  }
 };
 </script>
     
