@@ -6,7 +6,11 @@ let Request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/app/v1_0/',
 
   transformResponse: [function (data) {
-    return JSONBig.parse(data);
+    try {
+      return JSONBig.parse(data);
+    } catch (error) {
+      return data;
+    }
   }]
 })
 
@@ -36,6 +40,7 @@ Request.interceptors.response.use(function (response) {
   // 响应发送错误
   console.log('响应发送错误 ');
   try {
+    console.dir(error);
     // 判断token是否过期,过期则请求刷新token
     if (error.response.status == 401) {
       let res = await tempReq({

@@ -9,6 +9,7 @@ import video from '@/views/video/'
 import mine from '@/views/mine/'
 import search from '@/views/search/'
 import searchResult from '@/views/searchResult/'
+import details from '@/views/details/'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,14 @@ const routes = [
     component: search,
     meta: {
       title: '搜索'
+    }
+  },
+  {
+    path: '/details',
+    name: 'details',
+    component:details,
+    meta: {
+      title: '文章详情'
     }
   },
   {

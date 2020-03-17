@@ -62,7 +62,7 @@ import { activeList } from "@/api/newsactive";
 import { getLocal } from "@/utilis/local";
 // 导入组件
 import channel from "./commponts/channel";
-import more from './commponts/more';
+import more from "./commponts/more";
 export default {
   components: {
     channel,
@@ -143,9 +143,9 @@ export default {
     /**
      * item:当前被点击的文章
      * list:文章数组
-    */
+     */
     // 更多操作点击事件
-    async showmore(item,list){
+    async showmore(item, list) {
       try {
         // 显示更多操作的页面
         this.$refs.more.show = true;
@@ -156,35 +156,17 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    },
+    }
   },
   async created() {
     try {
       //获取频道数据发送请求
-      if(this.$store.state.token){
-      let res = await channelList();
-      console.log(res.data.data.channels);
-      this.channelList = res.data.data.channels;
-      // 根据不同的频道给出对应的数据
-      this.channelList.forEach(item => {
-        // pullLoading:控制下拉刷新状态
-        this.$set(item, "pullLoading", false);
-        // list中的v-model是控制loading加载状态,
-        this.$set(item, "loading", false);
-        // finished:标记是否已经把所有数据加载完毕
-        this.$set(item, "finished", false);
-        // 存放每一个频道下面的数据
-        this.$set(item, "list", []);
-        //存放时间戳,不用在界面显示
-        item.pre_time = Date.now();
-      });
-      }else{
-        let res = getLocal('channels');
-        if(res){
-          this.channels = res;
-        }else{
-          res = await channelList();
-          this.channelList = res.data.data.channels;
+      if (this.$store.state.token) {
+        let res = await channelList();
+        console.log(res.data.data.channels);
+        this.channelList = res.data.data.channels;
+        // 根据不同的频道给出对应的数据
+        this.channelList.forEach(item => {
           // pullLoading:控制下拉刷新状态
           this.$set(item, "pullLoading", false);
           // list中的v-model是控制loading加载状态,
@@ -195,6 +177,27 @@ export default {
           this.$set(item, "list", []);
           //存放时间戳,不用在界面显示
           item.pre_time = Date.now();
+        });
+      } else {
+        let res = getLocal("channels");
+        if (res) {
+          this.channels = res;
+        } else {
+          res = await channelList();
+          this.channelList = res.data.data.channels;
+          /// 根据不同的频道给出对应的数据
+          this.channelList.forEach(item => {
+            // pullLoading:控制下拉刷新状态
+            this.$set(item, "pullLoading", false);
+            // list中的v-model是控制loading加载状态,
+            this.$set(item, "loading", false);
+            // finished:标记是否已经把所有数据加载完毕
+            this.$set(item, "finished", false);
+            // 存放每一个频道下面的数据
+            this.$set(item, "list", []);
+            //存放时间戳,不用在界面显示
+            item.pre_time = Date.now();
+          });
         }
       }
     } catch (error) {
