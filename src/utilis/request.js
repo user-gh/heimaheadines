@@ -1,10 +1,11 @@
 import axios from 'axios'
 import store from '@/store/'
 import JSONBig from 'json-bigint'
+import { setLocal } from '@/utilis/local'
 let Request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/app/v1_0/',
 
-  transformResponse:[function(data){
+  transformResponse: [function (data) {
     return JSONBig.parse(data);
   }]
 })
@@ -22,15 +23,50 @@ Request.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
+// 准备一个新的对象
+let tempReq = axios.create({
+  baseURL: 'http://ttapi.research.itcast.cn/app/v1_0/',
+})
+
 // 添加响应拦截器
 Request.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   return response;
-}, function (error) {
+}, async function (error) {
   // 响应发送错误
   console.log('响应发送错误 ');
-  // 对响应错误做点什么
-  return Promise.reject(error);
+  try {
+    // 判断token是否过期,过期则请求刷新token
+    if (error.response.status == 401) {
+      let res = await tempReq({
+        url: "authorizations",
+        method: "put",
+        headers: {
+          // 注意：Bearer后面跟一个空格，然后再接refresh_token就行了
+          Authorization: 'Bearer ' + store.state.refresh_token
+        }
+      })
+      console.log(res);
+      // 更新到vuex
+      store.commit('changeToken', res.data.data.token);
+      // 存储到本地存储
+      // 所以我们先准备一个对象
+      let obj = {
+        token: res.data.data.token,
+        refresh_token: store.state.refresh_token
+      }
+      setLocal('tokenInfo', JSON.stringify(obj));
+      // 再次
+      let result = await request(error.config)
+      return result;
+    } else {
+      // 对响应错误做点什么
+      return Promise.reject(error);
+    }
+  } catch (error) {
+    console.log(error);
+
+  }
 });
 
 export default Request;
