@@ -30,6 +30,10 @@ Vue.filter('dataBefore', function (value) {
   return dayjs().to(value);
 });
 
+// 导入我的插件(登录判断)  
+import myPlugin from '@/utilis/myPlugin';
+Vue.use(myPlugin);
+
 new Vue({
   router,
   store,

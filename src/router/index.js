@@ -27,6 +27,14 @@ const routes = [
     }
   },
   {
+    path: '/checklogin',
+    name: 'login',
+    component: login,
+    meta: {
+      title: '登录'
+    }
+  },
+  {
     path: '/search',
     name: 'search',
     component: search,

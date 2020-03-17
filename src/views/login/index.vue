@@ -118,8 +118,15 @@ export default {
               "tokenInfo",
               JSON.stringify(res.data.data)
             );
-            // 跳转首页
-            this.$router.push("/home");
+            // 如果是登录页跳转的,来到home页面
+            if (this.$route.path == "/login") {
+              // 跳转到原来的页面
+              this.$router.push("/home");
+            // 否则, 跳转到原来的页面
+            } else {
+              // 跳转到原来的页面
+              this.$router.back();
+            }
           } else {
             console.log("手机或验证码错误");
           }

@@ -1,5 +1,0 @@
-class throttle {
-    async throttle(){
-        
-    }
-}

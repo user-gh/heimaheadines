@@ -111,16 +111,6 @@ export default {
         console.log(error);
       }
     },
-    // 判断是否登录封装函数
-    checkLogin() {
-      if (this.$store.state.token) {
-        return true;
-      } else {
-        this.$toast.fail("请先登录!");
-        this.$router.push("/login");
-        return false;
-      }
-    },
     // 去评论的点击事件
     goComment() {
       if(this.checkLogin()){
