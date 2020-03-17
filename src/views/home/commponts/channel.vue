@@ -1,6 +1,6 @@
 <template>
   <van-popup
-    @closed='isEdit = false'
+    @closed="isEdit = false"
     closeable
     close-icon-position="top-left"
     position="left"
@@ -48,6 +48,7 @@
 
 <script>
 import { AllchannelList, savechannelList, channelDel } from "@/api/channel";
+import { setLocal } from "@/utilis/local";
 export default {
   name: "channel",
   props: {
@@ -73,25 +74,31 @@ export default {
     // 频道推荐的点击事件
     async addChannel(item) {
       try {
-        this.$set(item,'pullLoading',false);
-        this.$set(item,'loading',false);
-        this.$set(item,'finished',false);
-        this.$set(item,'pre_time',Date.now());
-        this.$set(item,'list',[]);
+        this.$set(item, "pullLoading", false);
+        this.$set(item, "loading", false);
+        this.$set(item, "finished", false);
+        this.$set(item, "pre_time", Date.now());
+        this.$set(item, "list", []);
         // 添加到我的频道
         this.myList.push(item);
-        // 准备请求保存的参数
-        let channels = this.myList.slice(1).map((item, index) => {
-          let obj = {
-            id: item.id,
-            seq: index + 1
-          };
-          return obj;
-        });
-        // 调用保存修改之后的方法
-        await savechannelList({
-          channels
-        });
+        // 判断是否登录，登录则发请求，否则把频道存到本地存储
+        if (this.$store.state.token) {
+          // 准备请求保存的参数
+          let channels = this.myList.slice(1).map((item, index) => {
+            let obj = {
+              id: item.id,
+              seq: index + 1
+            };
+            return obj;
+          });
+          // 调用保存修改之后的方法
+          await savechannelList({
+            channels
+          });
+        } else {
+          // 没登录,则把频道存到本地存储
+          setLocal("channels", this.myList);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -101,11 +108,11 @@ export default {
       try {
         // 遍历我的数组是否与被点击的频道相等,相等就从数组中删除掉
         for (var i = 0; i < this.myList.length; i++) {
-          if(this.myList[i] == item){
+          if (this.myList[i] == item) {
             // splice 删除数组的方法
-            this.myList.splice(i,1);
+            this.myList.splice(i, 1);
           }
-        };
+        }
         // 根据最新的myList生成这个数组
         // let channels = this.myList.slice(1).map((item,index) => {
         //   let obj = {
@@ -114,10 +121,14 @@ export default {
         //   };
         //   return obj;
         // });
-         // 调用删除的方法 channelDel
-        await channelDel({
-          channels:item.id
-        });
+        // 调用删除的方法 channelDel
+        if (this.$store.state.token) {
+          await channelDel({
+            channels: item.id
+          });
+        }else{
+          setLocal("channels", this.myList);
+        }
       } catch (error) {
         console.log(error);
       }

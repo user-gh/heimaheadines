@@ -2,7 +2,13 @@
   <div class="home">
     <div class="top-nav">
       <van-icon class="top-icon" name="wap-nav" @click="$refs.channel.show = true" />
-      <van-search @focus="$router.push('/search')"  class="top-search" shape="round" background="#3194ff" placeholder="请输入搜索关键词" />
+      <van-search
+        @focus="$router.push('/search')"
+        class="top-search"
+        shape="round"
+        background="#3194ff"
+        placeholder="请输入搜索关键词"
+      />
       <van-icon class="top-icon" name="search" />
     </div>
 
@@ -53,6 +59,7 @@
 <script>
 import { channelList } from "@/api/channel";
 import { activeList } from "@/api/newsactive";
+import { getLocal } from "@/utilis/local";
 // 导入组件
 import channel from "./commponts/channel";
 import more from './commponts/more';
@@ -154,6 +161,7 @@ export default {
   async created() {
     try {
       //获取频道数据发送请求
+      if(this.$store.state.token){
       let res = await channelList();
       console.log(res.data.data.channels);
       this.channelList = res.data.data.channels;
@@ -170,6 +178,25 @@ export default {
         //存放时间戳,不用在界面显示
         item.pre_time = Date.now();
       });
+      }else{
+        let res = getLocal('channels');
+        if(res){
+          this.channels = res;
+        }else{
+          res = await channelList();
+          this.channelList = res.data.data.channels;
+          // pullLoading:控制下拉刷新状态
+          this.$set(item, "pullLoading", false);
+          // list中的v-model是控制loading加载状态,
+          this.$set(item, "loading", false);
+          // finished:标记是否已经把所有数据加载完毕
+          this.$set(item, "finished", false);
+          // 存放每一个频道下面的数据
+          this.$set(item, "list", []);
+          //存放时间戳,不用在界面显示
+          item.pre_time = Date.now();
+        }
+      }
     } catch (error) {
       console.log(error);
     }

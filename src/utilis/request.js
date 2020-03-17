@@ -56,8 +56,8 @@ Request.interceptors.response.use(function (response) {
         refresh_token: store.state.refresh_token
       }
       setLocal('tokenInfo', JSON.stringify(obj));
-      // 再次
-      let result = await request(error.config)
+      // 再次发送请求
+      let result = await request(error.config);
       return result;
     } else {
       // 对响应错误做点什么
@@ -65,7 +65,6 @@ Request.interceptors.response.use(function (response) {
     }
   } catch (error) {
     console.log(error);
-
   }
 });
 
