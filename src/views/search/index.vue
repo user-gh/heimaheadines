@@ -154,7 +154,7 @@ export default {
     background: #fff;
 
     .title {
-      height: 44px;
+      height: 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -169,22 +169,25 @@ export default {
     .history-content {
       .col-span {
         border-top: 0.5px solid #ccc;
-        border-right: 0.5px solid #ccc;
-        height: 44px;
+        
+        height: 48px;
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-    }
-    .col-span .van-col .van-col--12{
-      position: relative;
 
-      .remove{
+        &:nth-child(odd){
+          border-right: 0.5px solid #ccc;
+        }
+      }
+      .col-span .van-col .van-col--12{
+          position: relative;
+
+       i.remove.van-icon.van-icon-cross {
         position: absolute;
-        right: 0px;
+        right: 10px;
       }
     }
-    
   }
+}
 }
 </style>

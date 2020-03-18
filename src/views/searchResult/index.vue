@@ -6,7 +6,7 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <van-cell class="my-cell" v-for="(item, index) in list" :key="index" :title="item.title">
         <template slot="title">
-          <div>
+          <div @click="$router.push(`/details/${item.art_id}`)">
             <!-- 标题 -->
             <div style="display:flex; justify-content:space-between;">
               <span>{{item.title}}</span>

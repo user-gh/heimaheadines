@@ -48,7 +48,7 @@ Request.interceptors.response.use(function (response) {
         method: "put",
         headers: {
           // 注意：Bearer后面跟一个空格，然后再接refresh_token就行了
-          Authorization: 'Bearer ' + store.state.refresh_token
+          Authorization: 'Bearer ' + store.state.refresh_token  
         }
       })
       console.log(res);
@@ -61,8 +61,10 @@ Request.interceptors.response.use(function (response) {
         refresh_token: store.state.refresh_token
       }
       setLocal('tokenInfo', JSON.stringify(obj));
-      // 再次发送请求
+      // 再次发送请求(完成上一次发生错误的请求 )
       let result = await request(error.config);
+      // 根据最新的token拿到上一次错误请求后的数据了 ，为了让调用请求时也能拿到这个值
+      // 所以return出去
       return result;
     } else {
       // 对响应错误做点什么
@@ -72,5 +74,4 @@ Request.interceptors.response.use(function (response) {
     console.log(error);
   }
 });
-
 export default Request;

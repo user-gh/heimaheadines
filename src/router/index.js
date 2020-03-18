@@ -44,7 +44,7 @@ const routes = [
     }
   },
   {
-    path: '/details',
+    path: '/details/:art_id',
     name: 'details',
     component:details,
     meta: {
