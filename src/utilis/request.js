@@ -40,10 +40,11 @@ Request.interceptors.response.use(function (response) {
   // 响应发送错误
   console.log('响应发送错误 ');
   try {
-    console.dir(error);
+    console.log('进入了');
+    // console.dir(error)
     // 判断token是否过期,过期则请求刷新token
-    if (error.response.status == 401) {
-      let res = await tempReq({
+    if (error.response && error.response.status == 401) {
+      let res = await  tempReq({
         url: "authorizations",
         method: "put",
         headers: {
@@ -51,7 +52,6 @@ Request.interceptors.response.use(function (response) {
           Authorization: 'Bearer ' + store.state.refresh_token  
         }
       })
-      console.log(res);
       // 更新到vuex
       store.commit('changeToken', res.data.data.token);
       // 存储到本地存储
@@ -68,6 +68,7 @@ Request.interceptors.response.use(function (response) {
       return result;
     } else {
       // 对响应错误做点什么
+      console.log("响应错误")
       return Promise.reject(error);
     }
   } catch (error) {

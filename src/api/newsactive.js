@@ -26,3 +26,46 @@ export function activereports(data){
         data
     })
 }
+
+// 获取文章详情
+export function articleDetail(params){
+    return request({
+        url:`articles/${params.article_id}`,
+        method:'get'
+    })
+}
+
+// 对文章点赞
+export function articleLike(data){
+    return request({
+        url:'article/likings',
+        method:'post',
+        data
+    })
+}
+
+// 对文章取消点赞
+export function articleunLike(data){
+    return request({
+        url:`article/likings/${data.art_id}`,
+        method:'delete',
+    })
+}
+
+// 对文章不喜欢
+export function articleNotLike(data){
+    return request({
+        url:'article/dislikes',
+        method:'post',
+        data
+    })
+}
+
+// 对文章取消不喜欢
+export function articleunNotLike(data){
+    console.log(data)
+    return request({
+        url:`article/dislikes/${data.target}`,
+        method:'delete',
+    })
+}
