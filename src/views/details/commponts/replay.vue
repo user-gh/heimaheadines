@@ -125,7 +125,7 @@ export default {
           this.msg = "";
          // 评论数量自增1  
           this.item.reply_count++;
-          console.log(res);
+          console.log(res); 
         }
       } catch (error) {
         console.log(errror);
