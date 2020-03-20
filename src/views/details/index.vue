@@ -19,7 +19,11 @@
       </template>
     </van-cell>
     <!-- 内容区域 -->
-    <div class="content" v-html="art_content.content" ></div>
+   <van-cell>
+     <template slot="title">
+       <div class="content" v-html="art_content.content" ></div>
+     </template>
+   </van-cell>
     <!-- 操作区域 -->
     <div class="opration">
       <van-button @click="articleunLike" v-if="art_content.attitude == 1" round plain type="danger" icon="like">点赞</van-button>
@@ -29,7 +33,6 @@
       <van-button v-else @click="articleNotLike" round icon="delete">不喜欢</van-button>
     </div>
     <h3 style="padding-left:15px">猜你喜欢</h3>   
-    <van-divider />
     <!-- 文章评论区域 -->
     <van-list
       v-model="loading"
@@ -37,7 +40,7 @@
       finished-text="没有更多了"
       @load="onLoad"
       > 
-   <van-cell v-for="item in list" :key="item" >
+   <van-cell v-for="(item,index) in list" :key="index" >
       <template slot="title">
         <div class="comment">
           <img class="icon" :src="item.aut_photo" alt />
@@ -46,11 +49,12 @@
             <div class="com-content">{{item.content}}</div>
             <div class="btn-info">
               <span class="time">{{item.pubdate | dataBefore}}</span>
-              <van-button class="reply" size="small" round color="#f4f5f6">{{item.reply_count}}回复</van-button>
+              <van-button @click="showReplay(item)" class="reply" size="small" round color="#f4f5f6">{{item.reply_count}}回复</van-button>
             </div>
           </div>
           <div class="golike">
-            <van-icon class="like" name="good-job-o" />
+            <van-icon v-if="item.is_liking" @click="unlike(item)" class="like" name="like" />
+            <van-icon v-else plain class="like"  @click="like(item)" name="like-o" />
             <span class="num">{{item.like_count}}</span>
           </div>
         </div>
@@ -60,22 +64,28 @@
 </van-list>
     <div class="write">
       <!-- 输入框 --> 
-      <van-search v-model="msg" @keyup.enter = 'add' class="input" placeholder="写评论"/>
+      <van-search v-model="msg" @keydown.enter = 'add' class="input" placeholder="写评论"/>
       <!-- 评论图标 -->
-        <van-icon class="icon" name="comment-o" />
+        <van-icon class="icon" @click="add" name="comment-o" />
         <!-- 收藏图标 -->
-        <van-icon v-if="art_content.is_collected" class="icon" name="star" />
-        <van-icon v-else class="icon" name="star-o" />
+        <van-icon v-if="art_content.is_collected" @click="articleunCollection" class="icon"    name="star" />
+        <van-icon v-else @click="articleCollection"  class="icon" name="star-o" />
         <!-- 分享图标 -->
         <van-icon class="icon" name="share" />
       </div>
+      <!-- 评论回复弹出框 -->
+      <replay ref="replay" :item="comment_item"/>
     </div>
 </template>
 <script>
-import { articleDetail,articleLike,articleunLike,articleNotLike,articleunNotLike } from '@/api/newsactive'
+import { articleDetail,articleLike,articleunLike,articleNotLike,articleunNotLike,articleCollection,articleunCollection } from '@/api/newsactive'
 import  { followUser,cancelUser } from '@/api/user'
-import { getComments,AddComments } from '@/api/comments.js'
+import { getComments,AddComments,CommentLike,CommentunLike } from '@/api/comments.js'
+import  replay  from './commponts/replay'
 export default {
+  components:{  
+    replay
+  },
   name: "index",
   data() {
     return {
@@ -84,7 +94,8 @@ export default {
       list:[],
       art_content:[],
       offset:undefined,
-      msg:''
+      msg:'',
+      comment_item:{}
     };
   },
    async created(){
@@ -220,6 +231,7 @@ export default {
     // 写评论的回车事件
     async add(){
       try {
+        console.log("进入了添加评论")
         if(this.msg.trim() != '' && this.checkLogin()){
           let res = await AddComments({
           // 文章id
@@ -235,6 +247,48 @@ export default {
       } catch (error) {
         console.log(errror);
       }
+    },
+    // 评论点赞点击事件
+    async like(item){
+      let res = await CommentLike({
+        target:item.com_id.toString()
+      })
+       item.is_liking = true;
+      item.like_count++;
+      console.log(res);
+    },
+    // 评论取消点赞点击事件
+    async unlike(item){
+      let res = await CommentunLike({
+        target:item.com_id.toString()
+      })
+      item.is_liking = false;
+      item.like_count--;
+      console.log(res);
+    },
+    // 对文章收藏
+    async articleCollection(){
+      let res = await articleCollection({
+        target:this.$route.params.art_id
+      })
+      this.art_content.is_collected = true;
+      console.log(res);
+    },
+    async articleunCollection(){
+      let res = await articleunCollection({
+        target:this.$route.params.art_id
+      })
+      console.log(res);
+      this.art_content.is_collected = false
+    },
+    // 评论回复点击事件
+    async showReplay(item){
+      this.$refs.replay.show = true;
+      this.comment_item = item;
+      this.$refs.replay.loading = false,
+      this.$refs.replay.finished = false,
+      this.$refs.replay.list = [],
+      this.$refs.replay.offset = undefined;
     }
   },
 };
@@ -282,10 +336,15 @@ export default {
   }
 
   .content {
-    padding: 20px 15px;
+    // padding: 20px;
 
     /deep/img{
       max-width: 100%;
+    }
+    // * 匹配所有元素
+    /deep/ *{
+     word-break: break-word;
+      white-space: normal;
     }
   }
 

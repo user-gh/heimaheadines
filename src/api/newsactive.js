@@ -69,3 +69,20 @@ export function articleunNotLike(data){
         method:'delete',
     })
 }
+
+// 对文章收藏
+export function articleCollection(data){
+    return request({
+        url:'article/collections',
+        method:'post',
+        data
+    })
+}
+
+// 对文章取消收藏
+export function articleunCollection(data){
+    return request({
+        url:`article/collections/${data.target}`,
+        method:'delete'
+    })
+}

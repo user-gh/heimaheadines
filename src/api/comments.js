@@ -18,3 +18,19 @@ export function AddComments(data){
     })
 }
 
+//对评论点赞
+export function CommentLike(data){
+    return request({
+        url:'comment/likings',
+        method:'post',
+        data
+    })
+}
+
+// 取消评论点赞
+export function CommentunLike(data){
+    return request({
+        url:`comment/likings/${data.target}`,
+        method:'delete'
+    })
+}

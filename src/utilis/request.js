@@ -11,6 +11,7 @@ let Request = axios.create({
     } catch (error) {
       return data;
     }
+    // return JSONBig.parse(data);
   }]
 })
 
