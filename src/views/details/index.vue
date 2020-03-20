@@ -71,7 +71,7 @@
         <van-icon v-if="art_content.is_collected" @click="articleunCollection" class="icon"    name="star" />
         <van-icon v-else @click="articleCollection"  class="icon" name="star-o" />
         <!-- 分享图标 -->
-        <van-icon class="icon" name="share" />
+        <van-icon @click="share" class="icon" name="share" />
       </div>
       <!-- 评论回复弹出框 -->
       <replay ref="replay" :item="comment_item"/>
@@ -289,6 +289,10 @@ export default {
       this.$refs.replay.finished = false,
       this.$refs.replay.list = [],
       this.$refs.replay.offset = undefined;
+    },
+    // 分享点击事件
+    share(){
+      this.$toast.fail('此功能暂未开放');
     }
   },
 };

@@ -33,7 +33,7 @@
         <!-- 输入框 -->
         <van-search v-model="msg" @keydown.enter="add" class="input" placeholder="写评论" />
         <!-- 评论图标 -->
-        <van-icon class="icon" name="comment-o" />
+        <van-icon @click="add" class="icon" name="comment-o" />
       </div>
     </van-popup>
   </div>
@@ -41,7 +41,12 @@
 
 <script>
 // 导入获取评论内容的接口
-import { getComments } from "@/api/comments";
+import {
+  getComments,
+  CommentLike,
+  CommentunLike,
+  AddComments
+} from "@/api/comments";
 export default {
   name: "replat",
   props: {
@@ -62,22 +67,68 @@ export default {
   },
   methods: {
     async onLoad() {
-      let res = await getComments({
-        // 评论的回复
-        type: "c",
-        // 评论id
-        source: this.item.com_id.toString(),
-        offset: this.offset,
-        // 页容量
-        limit: 10
+      try {
+        let res = await getComments({
+          // 评论的回复
+          type: "c",
+          // 评论id
+          source: this.item.com_id.toString(),
+          offset: this.offset,
+          // 页容量
+          limit: 10
+        });
+        console.log(res);
+        this.list.push(...res.data.data.results);
+        this.offset = res.data.data.last_id;
+        // 继续加载
+        this.loading = false;
+        if (res.data.data.last_id == res.data.data.end_id) {
+          this.finished = true;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // 评论点赞点击事件
+    async like(item) {
+      let res = await CommentLike({
+        target: item.com_id.toString()
       });
+      item.is_liking = true;
+      item.like_count++;
       console.log(res);
-      this.list.push(...res.data.data.results);
-      this.offset = res.data.data.last_id;
-      // 继续加载
-      this.loading = false;
-      if (res.data.data.last_id == res.data.data.end_id) {
-        this.finished = true;
+    },
+    // 评论取消点赞点击事件
+    async unlike(item) {
+      let res = await CommentunLike({
+        target: item.com_id.toString()
+      });
+      item.is_liking = false;
+      item.like_count--;
+      console.log(res);
+    },
+    // 写评论的回车事件
+    async add() {
+      try {
+        console.log("进入了评论回复");
+        if (this.msg.trim() != "" && this.checkLogin()) {
+          let res = await AddComments({
+            // 评论id
+            target: this.item.com_id,
+            // 评论内容
+            content: this.msg,
+            // 文章id
+            art_id: this.$route.params.art_id
+          });
+          this.list.unshift(res.data.data.new_obj);
+          // 把输入框清空
+          this.msg = "";
+         // 评论数量自增1  
+          this.item.reply_count++;
+          console.log(res);
+        }
+      } catch (error) {
+        console.log(errror);
       }
     }
   }
