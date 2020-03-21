@@ -10,6 +10,7 @@ import mine from '@/views/mine/'
 import search from '@/views/search/'
 import searchResult from '@/views/searchResult/'
 import details from '@/views/details/'
+import profile from '@/views/profile/'
 
 Vue.use(VueRouter)
 
@@ -68,6 +69,14 @@ const routes = [
     component: searchResult,
     meta: {
       title: '搜索结果'
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component:profile,
+    meta: {
+      title: '修改个人信息'
     }
   },
   {

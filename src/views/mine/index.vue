@@ -4,7 +4,7 @@
     <div v-if="$store.state.token" class="top">
       <!-- 用户信息 -->
       <div v-if="$store.state.token" class="user-info">
-        <img class="avatar" :src="userInfo.photo" alt />
+        <img @click="$router.push('/profile')" class="avatar" :src="userInfo.photo" alt />
         <span class="name">{{userInfo.name}}</span>
       </div>
 
