@@ -24,3 +24,11 @@ export function getInfo(){
         method:'get'
     })
 }
+
+// 获取用户自己的其他信息
+export function getProfile(){
+    return request({
+        url:'user/profile',
+        method:'get'
+    })
+}

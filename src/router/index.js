@@ -76,7 +76,7 @@ const routes = [
     name: 'profile',
     component:profile,
     meta: {
-      title: '修改个人信息'
+      title: '个人信息'
     }
   },
   {

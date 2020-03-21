@@ -1,28 +1,48 @@
 <template>
   <div class="profile">
     <!-- 导航栏 -->
-    <van-nav-bar title="用户资料修改" left-arrow right-text="保存" @click-left="$router.back()" />
+    <van-nav-bar title="个人信息" left-arrow right-text="保存" @click-left="$router.back()" />
     <van-cell-group class="top-profile">
-      <van-cell title="头像" value="内容" is-link>
+      <van-cell title="头像" is-link>
         <template slot="default">
-          <img class="avatar" src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi" alt />
+          <img @click="$refs.photo.show = true" class="avatar" :src="userInfo.photo" alt />
         </template>
       </van-cell>
-      <van-cell title="昵称" value="13647198155" is-link />
+      <van-cell :title="userInfo.name" value="13647198155" is-link />
       <van-cell title="介绍" value="猛男" is-link />
     </van-cell-group>
     <van-cell-group>
-      <van-cell title="性别" value="男" is-link />
-      <van-cell title="生日" value="1999.06.01" is-link />
+      <van-cell title="性别" :value="userInfo.gender == 0 ?'男' : '女'" is-link />
+      <van-cell title="生日" :value="userInfo.birthday" is-link />
     </van-cell-group>
+    <!-- 弹出层 -->
+    <photo ref="photo" />
   </div>
 </template>
 
 <script>
+import { getInfo, getProfile } from "@/api/user";
+import photo from "./commponts/photo";
 export default {
+  components:{
+    photo
+  },
   name: "index",
   data() {
-    return {};
+    return {
+      userInfo: {}
+    };
+  },
+  async created() {
+    try {
+      let res = await getInfo();
+      this.userInfo = res.data.data;
+      console.log(res);
+      res = await getProfile();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 </script>
