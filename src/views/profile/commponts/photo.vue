@@ -27,8 +27,8 @@ export default {
     },
     // 文件选择后的cchange事件
     filechange() {
-     // 把文件对象转成临时路径
-     let url = URL.createObjectURL(this.$refs.photoFile.files[0]);
+      // 把文件对象转成临时路径
+      let url = URL.createObjectURL(this.$refs.photoFile.files[0]);
       // 图片预览功能配置
       ImagePreview({
         // 放图片路径
@@ -37,8 +37,15 @@ export default {
         startPosition: 1,
         // 关闭事件
         onClose() {
-          // do something
-          console.log("关闭了");
+          Dialog.confirm({
+            message: "是否设置该图片为头像"
+          })
+            .then(() => {
+              // on confirm
+            })
+            .catch(() => {
+              // on cancel
+            });
         },
         // 展示关闭按钮
         closeable: true,
