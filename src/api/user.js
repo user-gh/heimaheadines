@@ -16,3 +16,11 @@ export function cancelUser(data){
         method:'delete'
     })
 }
+
+// 获取用户自己的信息
+export function getInfo(){
+    return request({
+        url:'user',
+        method:'get'
+    })
+}

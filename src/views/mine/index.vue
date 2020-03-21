@@ -1,31 +1,36 @@
 <template>
   <div class="mine">
     <!-- 头部区域 -->
-    <div class="top">
+    <div v-if="$store.state.token" class="top">
       <!-- 用户信息 -->
-      <div class="user-info">
-        <img class="avatar" src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi" alt />
-        <span class="name">黑马小公举1号</span>
-        <van-button size="mine" round>申请认证</van-button>
+      <div v-if="$store.state.token" class="user-info">
+        <img class="avatar" :src="userInfo.photo" alt />
+        <span class="name">{{userInfo.name}}</span>
       </div>
+
       <!-- 统计数据 -->
       <div class="data-info">
         <div class="data-info-item">
-          <span>0</span>
+          <span>{{userInfo.art_count}}</span>
           <span>动态</span>
         </div>
         <div class="data-info-item">
-          <span>4</span>
+          <span>{{userInfo.follow_count}}</span>
           <span>关注</span>
         </div>
         <div class="data-info-item">
-          <span>0</span>
+          <span>{{userInfo.fans_count}}</span>
           <span>粉丝</span>
         </div>
       </div>
       <div class="read-time">
         <div>今日阅读</div>
         <div>1分钟</div>
+      </div>
+    </div>
+    <div v-else class="top">
+      <div class="phone-wrap">
+        <img class="top-phone" src="http://toutiao.research.itcast.cn/img/wd_weidl.png" alt />
       </div>
     </div>
     <!-- 操作区域  -->
@@ -46,10 +51,21 @@
 </template>
 
 <script>
+import { getInfo } from "@/api/user";
 export default {
   name: "index",
   data() {
-    return {};
+    return {
+      userInfo: {}
+    };
+  },
+  async created() {
+    if (this.$store.state.token) {
+      // 有token代表登录了,就发请求获取当前数据
+      let res = await getInfo();
+      this.userInfo = res.data.data;
+      console.log(res);
+    }
   }
 };
 </script>
@@ -60,6 +76,9 @@ export default {
     padding: 25px 35px;
     background: #429efa;
     position: relative;
+    min-height: 200px;
+    box-sizing: border-box;
+
     .user-info {
       display: flex;
       .avatar {
@@ -71,6 +90,14 @@ export default {
         margin-left: 15px;
         color: #fff;
         font-size: 18px;
+      }
+    }
+    .phone-wrap {
+      text-align: center;
+      padding-top: 30px;
+      .top-phone {
+        width: 60px;
+        height: 60px;
       }
     }
     .data-info {
