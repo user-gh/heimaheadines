@@ -45,3 +45,12 @@ export function uploadPhoto(data) {
         data: fm
     })
 }
+
+// 编辑用户个人资料
+export function editInfo(data) {
+    return request({
+        url: 'user/profile',
+        method: 'patch',
+        data
+    })
+}
