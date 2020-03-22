@@ -23,7 +23,7 @@
           >
             <van-cell v-for="(it,idx) in item.list" :key="idx" :title="it.title">
               <template slot="title">
-                <div @click="$router.push(`/details/${item.art_id}`)" class="title">
+                <div @click="$router.push(`/details/${it.art_id}`)" class="title">
                   <span>{{it.title}}</span>
                   <img
                     style="height:73px;width:116px;"
@@ -265,6 +265,7 @@ export default {
     }
     .title {
       display: flex;
+      flex-direction: column;
     }
   }
 }
