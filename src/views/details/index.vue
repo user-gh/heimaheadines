@@ -66,9 +66,9 @@
       <!-- 输入框 --> 
       <van-search v-model="msg" @keydown.enter = 'add' class="input" placeholder="写评论"/>
       <!-- 评论图标 -->
-        <van-icon class="icon" @click="add" name="comment-o" />
+          <van-icon class="icon" @click="add" name="comment-o" badge='9' />
         <!-- 收藏图标 -->
-        <van-icon v-if="art_content.is_collected" @click="articleunCollection" class="icon"    name="star" />
+        <van-icon v-if="art_content.is_collected" @click="articleunCollection" class="icon" name="star" />
         <van-icon v-else @click="articleCollection"  class="icon" name="star-o" />
         <!-- 分享图标 -->
         <van-icon @click="share" class="icon" name="share" />

@@ -11,6 +11,7 @@ import search from '@/views/search/'
 import searchResult from '@/views/searchResult/'
 import details from '@/views/details/'
 import profile from '@/views/profile/'
+import robot from '@/views/robot/'
 
 Vue.use(VueRouter)
 
@@ -77,6 +78,14 @@ const routes = [
     component:profile,
     meta: {
       title: '个人信息'
+    }
+  },
+  {
+    path: '/robot',
+    name: 'robot',
+    component:robot,
+    meta: {
+      title: '小智机器人'
     }
   },
   {

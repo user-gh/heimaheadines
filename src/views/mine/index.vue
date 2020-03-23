@@ -44,7 +44,7 @@
       <van-cell title="消息通知" is-link />
       <van-cell title="实名认证" is-link />
       <van-cell title="用户反馈" is-link />
-      <van-cell title="小智同学" is-link />
+      <van-cell @click="$router.push({name:'robot',params:{icon:userInfo.photo}})" title="小智同学" is-link />
       <van-cell title="系统设置" is-link />
     </van-cell-group>
   </div>

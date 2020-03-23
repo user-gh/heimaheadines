@@ -145,6 +145,10 @@ export default {
   span.van-nav-bar__text {
     color: #fff;
   }
+
+  .van-nav-bar__text:active{
+    background-color: transparent;
+  }
   .top-profile {
     margin-bottom: 10px;
     .avatar {
