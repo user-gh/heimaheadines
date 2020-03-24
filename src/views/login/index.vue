@@ -7,6 +7,7 @@
       v-model="form.mobile"
       left-icon="smile-o"
       :error-message="valid.mobile"
+      type='tel'
       placeholder="请输入手机号"
     >
       <template slot="left-icon">
@@ -18,6 +19,7 @@
       left-icon="smile-o"
       :error-message="valid.code"
       placeholder="请输入验证码"
+      type="number"
     >
       <template slot="left-icon">
         <span class="iconfont icon-pic-lock"></span>

@@ -3,7 +3,7 @@
     <!-- 导航栏 -->
     <van-nav-bar title="文章详情" left-arrow @click-left="$router.back()" right-text="· · ·" />
     <!-- 标题 -->
-    <h2 class="title">{{art_content.title}}</h2>
+    <h6 class="title">{{art_content.title}}</h6>
     <!-- 作者信息 -->
     <van-cell>
       <template slot="title">

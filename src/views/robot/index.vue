@@ -73,7 +73,6 @@ export default {
     );
     // 接收返回的消息
     this.socket.on("message", data => {
-      console.log(data);
       // 添加到数组中就能看到
       this.list.push({
         isMe: false,

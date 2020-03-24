@@ -9,6 +9,8 @@ import 'vant/lib/index.css';
 
 // 注册vant
 Vue.use(Vant);
+// 导入 lib-flexible
+import 'amfe-flexible/index'
 
 // 引入字体图标
 import '@/style/font.css';

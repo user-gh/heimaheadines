@@ -30,7 +30,7 @@
     </div>
     <div v-else class="top">
       <div class="phone-wrap">
-        <img class="top-phone" src="http://toutiao.research.itcast.cn/img/wd_weidl.png" alt />
+        <img @click="$router.push('/login')" class="top-phone" src="http://toutiao.research.itcast.cn/img/wd_weidl.png" alt />
       </div>
     </div>
     <!-- 操作区域  -->

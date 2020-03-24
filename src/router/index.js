@@ -19,7 +19,7 @@ const routes = [
   {
     path:'/',
     // 路由重定向
-    redirect: '/login'
+    redirect: '/home'
   },
   {
     path: '/login',
